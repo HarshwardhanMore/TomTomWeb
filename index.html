@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.21.3/maps/maps.css"
+    />
+    <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.21.3/maps/maps-web.min.js"></script>
+    <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.21.3/services/services-web.min.js"></script>
+  </head>
+  <body
+    style="
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+    "
+  >
+    <div>
+      <input type="text" id="query" value="" />
+      <button onclick="Search()">SEARCH</button>
+    </div>
+
+    <div id="map" style="width: 95%; height: 90%"></div>
+    <script>
+      var APIKEY = "K2nCMuWYTOq3C83CpyiEPLSmdOONUG51";
+      var PUNE = [73.856255, 18.516726];
+      var map = tt.map({
+        key: APIKEY,
+        container: "map",
+        center: PUNE,
+        zoom: 14,
+      });
+
+      var movemap = function (lnglat) {
+        map.flyTo({
+          center: lnglat,
+          zoom: 14,
+        });
+      };
+
+      var handleResults = function (result) {
+        console.log(result);
+        if (result.results) {
+          movemap(result.results[0].position);
+        }
+
+        var marker = new tt.Marker()
+          .setLngLat(result.results[0].position)
+          .addTo(map);
+      };
+
+      var Search = function () {
+        tt.services
+          .fuzzySearch({
+            key: APIKEY,
+            query: document.getElementById("query").value,
+            // boundingBox: map.getBounds(),
+          })
+          .then(handleResults);
+      };
+    </script>
+  </body>
+</html>
